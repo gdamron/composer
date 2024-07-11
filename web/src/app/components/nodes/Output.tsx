@@ -3,6 +3,8 @@
 import { useShallow } from "zustand/react/shallow";
 import { AppStore, useStore } from "../../store";
 import { Handle, Position } from "reactflow";
+import { useContext } from "react";
+import { WebAudioContext } from "../../lib/web-audio-provider";
 
 const selector = (store: AppStore) => ({
   isAudioRunning: store.isAudioRunning,
@@ -11,6 +13,7 @@ const selector = (store: AppStore) => ({
 
 export const Output = () => {
   const { isAudioRunning, toggleAudio } = useStore(useShallow(selector));
+  const ctx = useContext(WebAudioContext);
 
   return (
     <div>
@@ -21,7 +24,10 @@ export const Output = () => {
           Output
         </p>
 
-        <button onClick={toggleAudio} className="my-4 mx-8 w-[42px] h-[42px]">
+        <button
+          onClick={() => toggleAudio(ctx)}
+          className="my-4 mx-8 w-[42px] h-[42px]"
+        >
           {isAudioRunning ? (
             <div className="w-[42px] h-[42px]">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">

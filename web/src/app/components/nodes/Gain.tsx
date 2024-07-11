@@ -2,20 +2,22 @@
 
 import { Handle, Position } from "reactflow";
 import { AppStore, useStore } from "../../store";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { WebAudio, WebAudioContext } from "../../lib/web-audio-provider";
 
 export interface GainData {
   gain: number;
 }
 
-const selector = (id: string) => (store: AppStore) => ({
+const selector = (ctx: WebAudio, id: string) => (store: AppStore) => ({
   setLevel: (e: ChangeEvent<HTMLInputElement>) =>
-    store.updateNode(id, { gain: +e.target.value / 100.0 }),
+    store.updateNode(ctx, id, { gain: +e.target.value / 100.0 }),
 });
 
 export const Gain = ({ id, data }: { id: string; data: GainData }) => {
-  const { setLevel } = useStore(useShallow(selector(id)));
+  const ctx = useContext(WebAudioContext);
+  const { setLevel } = useStore(useShallow(selector(ctx, id)));
 
   return (
     <div>

@@ -55,10 +55,9 @@ export const useStore = create(
       const id = nanoid();
 
       switch (type) {
-        case "lfo":
         case "osc": {
           const data: OscillatorParameters = {
-            frequency: type === "lfo" ? 10 : 440,
+            frequency: 440,
             type: "sine",
           };
           const position = { x: 0, y: 0 };
@@ -69,9 +68,8 @@ export const useStore = create(
           break;
         }
 
-        case "amp":
         case "gain": {
-          const data: GainParameters = { gain: type === "amp" ? 1.0 : 0.5 };
+          const data: GainParameters = { gain: 1.0 };
           const position = { x: 0, y: 0 };
           ctx.createNode({ ctx, id, type, data });
           set({ nodes: [...get().nodes, { id, type, data, position }] });

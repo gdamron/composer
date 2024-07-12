@@ -2,7 +2,7 @@
 
 import { createContext, ReactNode, useEffect, useState } from "react";
 
-export type WebAudioNodeType = "amp" | "lfo" | "osc" | "gain" | "dac";
+export type WebAudioNodeType = "osc" | "gain" | "dac";
 
 export interface OscillatorParameters {
   frequency: number;
@@ -84,7 +84,6 @@ const createNode = ({
   }
 
   switch (type) {
-    case "lfo":
     case "osc": {
       const node = context.createOscillator();
       const oscData = data as OscillatorParameters;
@@ -94,7 +93,6 @@ const createNode = ({
       ctx.nodes[id] = node;
       break;
     }
-    case "amp":
     case "gain": {
       const node = context.createGain();
       const gainData = data as GainParameters;

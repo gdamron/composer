@@ -10,15 +10,10 @@ import {
 } from "reactflow";
 import { nanoid } from "nanoid";
 import {
-  connect,
-  createAudioNode,
-  disconnect,
-  isAudioRunning,
-  removeAudioNode,
-  toggleAudioContext,
-  updateAudioNode,
-} from "./audio";
-import { WebAudio } from "./lib/web-audio-provider";
+  GainParameters,
+  OscillatorParameters,
+  WebAudio,
+} from "./lib/WebAudioProvider";
 
 export interface AppStore {
   isAudioRunning: boolean;
@@ -61,25 +56,22 @@ export const useStore = create(
 
       switch (type) {
         case "osc": {
-          const data = {
+          const data: OscillatorParameters = {
             frequency: 440,
             type: "sine",
           };
-          const position = {
-            x: 0,
-            y: 0,
-          };
+          const position = { x: 0, y: 0 };
 
-          createAudioNode({ ctx, id, type, data });
+          ctx.createNode({ ctx, id, type, data });
           set({ nodes: [...get().nodes, { id, type, data, position }] });
 
           break;
         }
 
         case "gain": {
-          const data = { gain: 0.5 };
+          const data: GainParameters = { gain: 1.0 };
           const position = { x: 0, y: 0 };
-          createAudioNode({ ctx, id, type, data });
+          ctx.createNode({ ctx, id, type, data });
           set({ nodes: [...get().nodes, { id, type, data, position }] });
 
           break;
@@ -104,18 +96,18 @@ export const useStore = create(
       set({
         edges: [edge, ...get().edges],
       });
-      connect({ ctx, sourceId: source, targetId: target });
+      ctx.connect({ ctx, sourceId: source, targetId: target });
     },
     removeEdges(ctx: WebAudio, edges: Edge[]) {
       for (const edge of edges) {
         const { source, target } = edge;
         if (source && target) {
-          disconnect({ ctx, sourceId: source, targetId: target });
+          ctx.disconnect({ ctx, sourceId: source, targetId: target });
         }
       }
     },
     updateNode(ctx: WebAudio, id, data) {
-      updateAudioNode({ ctx, id, data });
+      ctx.updateNode({ ctx, id, data });
       set({
         nodes: get().nodes.map((node) =>
           node.id === id ? { ...node, data: { ...node.data, ...data } } : node,
@@ -125,13 +117,13 @@ export const useStore = create(
     removeNodes(ctx: WebAudio, nodes: Node[]) {
       for (const node of nodes) {
         const { id } = node;
-        removeAudioNode({ ctx, id });
+        ctx.deleteNode({ ctx, id });
       }
     },
     toggleAudio(ctx: WebAudio) {
-      toggleAudioContext(ctx)?.then(() => {
+      ctx.toggleAudio(ctx)?.then(() => {
         set({
-          isAudioRunning: isAudioRunning(ctx),
+          isAudioRunning: ctx.isRunning(ctx),
         });
       });
     },

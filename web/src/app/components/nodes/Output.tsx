@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { AppStore, useStore } from "../../store";
 import { Handle, Position } from "reactflow";
 import { useContext } from "react";
-import { WebAudioContext } from "../../lib/web-audio-provider";
+import { WebAudioContext } from "../../lib/WebAudioProvider";
 
 const selector = (store: AppStore) => ({
   isAudioRunning: store.isAudioRunning,

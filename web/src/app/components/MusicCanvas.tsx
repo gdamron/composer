@@ -52,13 +52,13 @@ export const MusicCanvas = () => {
     >
       <Panel className="space-x-4" position="top-right">
         <button
-          className="px-2 py-1 rounded bg-white shadow-md"
+          className="px-2 py-1 rounded bg-cardbg shadow-md"
           onClick={() => addNode(ctx, "osc")}
         >
           Add Osc
         </button>
         <button
-          className="px-2 py-1 rounded bg-white shadow-md"
+          className="px-2 py-1 rounded bg-cardbg shadow-md"
           onClick={() => addNode(ctx, "gain")}
         >
           Add Gain

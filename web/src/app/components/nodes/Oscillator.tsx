@@ -56,7 +56,7 @@ export const Oscillator = ({
           <span className="text-xs font-bold mb-2">Waveform</span>
           <div className="flex justify-end bg-gray-50 py-2 px-3 rounded-md">
             <select
-              className="nodrag bg-transparent grow text-right px-2"
+              className="nodrag bg-transparent grow text-right pe-4"
               value={data.type}
               onChange={setType}
             >

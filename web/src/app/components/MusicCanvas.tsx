@@ -9,10 +9,16 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
-import { WebAudioContext } from "../lib/web-audio-provider";
+import { WebAudioContext } from "../lib/WebAudioProvider";
 import { AppStore, useStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
-import { Oscillator, Gain, Output } from "./";
+import {
+  Oscillator,
+  LowFrequencyOscillator,
+  Gain,
+  Output,
+  Amplifier,
+} from "./";
 import { useContext } from "react";
 
 const selector = (store: AppStore) => ({
@@ -20,7 +26,9 @@ const selector = (store: AppStore) => ({
 });
 
 const nodeTypes = {
+  amp: Amplifier,
   gain: Gain,
+  lfo: LowFrequencyOscillator,
   osc: Oscillator,
   dac: Output,
 };
@@ -62,6 +70,18 @@ export const MusicCanvas = () => {
           onClick={() => addNode(ctx, "gain")}
         >
           Add Gain
+        </button>
+        <button
+          className="px-2 py-1 rounded bg-white shadow-md"
+          onClick={() => addNode(ctx, "amp")}
+        >
+          Add Amp
+        </button>
+        <button
+          className="px-2 py-1 rounded bg-white shadow-md"
+          onClick={() => addNode(ctx, "lfo")}
+        >
+          Add LFO
         </button>
       </Panel>
       <Background variant={BackgroundVariant.Dots} />

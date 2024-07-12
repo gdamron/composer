@@ -6,16 +6,22 @@ import { ChangeEvent, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { WebAudio, WebAudioContext } from "../../lib/WebAudioProvider";
 
-export interface GainData {
+export interface AmplifierData {
   gain: number;
 }
 
 const selector = (ctx: WebAudio, id: string) => (store: AppStore) => ({
   setLevel: (e: ChangeEvent<HTMLInputElement>) =>
-    store.updateNode(ctx, id, { gain: +e.target.value / 100.0 }),
+    store.updateNode(ctx, id, { gain: +e.target.value }),
 });
 
-export const Gain = ({ id, data }: { id: string; data: GainData }) => {
+export const Amplifier = ({
+  id,
+  data,
+}: {
+  id: string;
+  data: AmplifierData;
+}) => {
   const ctx = useContext(WebAudioContext);
   const { setLevel } = useStore(useShallow(selector(ctx, id)));
 
@@ -25,7 +31,7 @@ export const Gain = ({ id, data }: { id: string; data: GainData }) => {
 
       <div className="rounded-md bg-white shadow-xl">
         <p className="rounded-t-md px-2 py-1 bg-pink-500 text-white text-sm">
-          Gain
+          Amplifier
         </p>
         <label className="flex flex-col px-2 py-1">
           <span className="text-xs font-bold my-2">Level</span>
@@ -34,7 +40,7 @@ export const Gain = ({ id, data }: { id: string; data: GainData }) => {
             type="range"
             min="0"
             max="100"
-            value={data.gain * 100}
+            value={data.gain}
             onChange={setLevel}
           />
           <span className="text-right text-xs">{data.gain}</span>

@@ -51,10 +51,11 @@ export const useStore = create(
       const id = nanoid();
 
       switch (type) {
+        case "clock":
         case "osc": {
           const data: OscillatorParameters = {
-            frequency: 440,
-            type: "sine",
+            frequency: type === "osc" ? 440 : 1,
+            type: type === "osc" ? "sine" : "sawtooth",
           };
           const position = { x: 0, y: 0 };
 

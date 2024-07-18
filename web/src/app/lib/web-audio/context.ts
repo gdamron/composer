@@ -2,7 +2,7 @@
 
 import { createContext } from "react";
 
-export type WebAudioNodeType = "osc" | "gain" | "dac";
+export type WebAudioNodeType = "clock" | "osc" | "gain" | "dac";
 
 export interface OscillatorParameters {
   frequency: number;
@@ -84,12 +84,24 @@ export const createNode = ({
   }
 
   switch (type) {
+    case "clock":
     case "osc": {
       const node = context.createOscillator();
       const oscData = data as OscillatorParameters;
       node.frequency.value = oscData.frequency;
       node.type = oscData.type;
       node.start();
+      if (type === "clock" && ctx.audioContext) {
+        node.stop(ctx.audioContext.currentTime + 1.0 / oscData.frequency);
+        node.onended = (evt) => {
+          console.log(
+            `clock ${id} triggerd at ${ctx.audioContext?.currentTime}`,
+          );
+          console.log(evt);
+          deleteNode({ ctx, id });
+          createNode({ ctx, id, data, type });
+        };
+      }
       ctx.nodes[id] = node;
       break;
     }

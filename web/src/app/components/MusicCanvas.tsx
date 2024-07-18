@@ -12,14 +12,22 @@ import "reactflow/dist/style.css";
 import { WebAudioContext } from "../lib";
 import { AppStore, useStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
-import { Oscillator, Gain, Output } from "./";
+import { Clock, Oscillator, Gain, Output } from "./";
 import { useContext } from "react";
 
 const selector = (store: AppStore) => ({
-  ...store,
+  nodes: store.nodes,
+  edges: store.edges,
+  addEdge: store.addEdge,
+  addNode: store.addNode,
+  onNodesChange: store.onNodesChange,
+  onEdgesChange: store.onEdgesChange,
+  removeEdges: store.removeEdges,
+  removeNodes: store.removeNodes,
 });
 
 const nodeTypes = {
+  clock: Clock,
   gain: Gain,
   osc: Oscillator,
   dac: Output,
@@ -37,6 +45,7 @@ export const MusicCanvas = () => {
     removeNodes,
     removeEdges,
   } = useStore(useShallow(selector));
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -62,6 +71,12 @@ export const MusicCanvas = () => {
           onClick={() => addNode(ctx, "gain")}
         >
           Add Gain
+        </button>
+        <button
+          className="px-2 py-1 rounded bg-cardbg shadow-md"
+          onClick={() => addNode(ctx, "clock")}
+        >
+          Add Clock
         </button>
       </Panel>
       <Background variant={BackgroundVariant.Dots} />

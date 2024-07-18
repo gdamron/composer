@@ -3,18 +3,22 @@
 import { ReactNode } from "react";
 import { Handle, HandleProps } from "reactflow";
 
+type NodeCardHandleProps = HandleProps & { className?: string };
+
 export interface NodeCardProps {
   title: string;
-  handles: HandleProps[];
+  handles: NodeCardHandleProps[];
   children: ReactNode;
 }
 
 export const NodeCard = ({ title, handles, children }: NodeCardProps) => {
   return (
     <div className="min-w-40">
-      {handles.map((props, idx) => (
-        <Handle key={props.id || idx} {...props} />
-      ))}
+      <div className="flex flex-row content-around w-full">
+        {handles.map((props, idx) => (
+          <Handle key={props.id || idx} {...props} />
+        ))}
+      </div>
       <div className="rounded-md bg-cardbg shadow-xl">
         <p className="rounded-t-md px-2 py-1 bg-accent text-white font-semibold text-sm">
           {title}

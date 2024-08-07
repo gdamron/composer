@@ -1,7 +1,7 @@
 "use client";
 
 import "reactflow/dist/style.css";
-import { WebAudioProvider } from "./lib/WebAudioProvider";
+import { WebAudioProvider } from "./lib";
 import { MusicCanvas } from "./components/MusicCanvas";
 
 export default function Home() {

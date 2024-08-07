@@ -1,11 +1,11 @@
 "use client";
 
-import { Handle, Position } from "reactflow";
+import { Position } from "reactflow";
 import { AppStore, useStore } from "../../store";
 import { ChangeEvent, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { WebAudio, WebAudioContext } from "../../lib/WebAudioProvider";
 import { NodeCard } from "./NodeCard";
+import { WebAudio, WebAudioContext } from "../../lib";
 
 export interface GainData {
   gain: number;

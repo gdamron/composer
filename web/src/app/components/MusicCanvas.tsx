@@ -9,7 +9,7 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
-import { WebAudioContext } from "../lib/WebAudioProvider";
+import { WebAudioContext } from "../lib";
 import { AppStore, useStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
 import { Oscillator, Gain, Output } from "./";

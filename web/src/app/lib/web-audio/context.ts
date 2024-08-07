@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext } from "react";
 
 export type WebAudioNodeType = "osc" | "gain" | "dac";
 
@@ -13,7 +13,7 @@ export interface GainParameters {
   gain: number;
 }
 
-type WebAudioNodeParameters = OscillatorParameters | GainParameters;
+export type WebAudioNodeParameters = OscillatorParameters | GainParameters;
 
 export interface WebAudio {
   audioContext?: AudioContext | undefined;
@@ -61,7 +61,7 @@ export interface WebAudio {
   toggleAudio: (ctx: WebAudio) => Promise<void> | undefined;
 }
 
-const createNode = ({
+export const createNode = ({
   ctx,
   id,
   type,
@@ -105,7 +105,7 @@ const createNode = ({
   }
 };
 
-const updateNode = ({
+export const updateNode = ({
   ctx,
   id,
   data,
@@ -140,7 +140,7 @@ const updateNode = ({
   }
 };
 
-const deleteNode = ({ ctx, id }: { ctx: WebAudio; id: string }) => {
+export const deleteNode = ({ ctx, id }: { ctx: WebAudio; id: string }) => {
   const nodes = ctx.nodes || {};
   const node = nodes[id];
 
@@ -152,7 +152,7 @@ const deleteNode = ({ ctx, id }: { ctx: WebAudio; id: string }) => {
   delete nodes[id];
 };
 
-const connect = ({
+export const connect = ({
   ctx,
   sourceId,
   targetId,
@@ -179,7 +179,7 @@ const connect = ({
   }
 };
 
-const disconnect = ({
+export const disconnect = ({
   ctx,
   sourceId,
   targetId,
@@ -206,15 +206,61 @@ const disconnect = ({
   }
 };
 
-const isRunning = (ctx: WebAudio) => {
+export const isRunning = (ctx: WebAudio) => {
   return ctx.audioContext?.state === "running";
 };
 
-const toggleAudio = (ctx: WebAudio) => {
+export const toggleAudio = (ctx: WebAudio) => {
   return isRunning(ctx)
     ? ctx.audioContext?.suspend()
     : ctx.audioContext?.resume();
 };
+
+export interface WebAudio {
+  audioContext?: AudioContext | undefined;
+  nodes?: { [key: string]: AudioNode } | undefined;
+  createNode: ({
+    ctx,
+    id,
+    type,
+    data,
+  }: {
+    ctx: WebAudio;
+    id: string;
+    type: WebAudioNodeType;
+    data: WebAudioNodeParameters;
+  }) => void;
+  updateNode: ({
+    ctx,
+    id,
+    data,
+  }: {
+    ctx: WebAudio;
+    id: string;
+    data: Partial<WebAudioNodeParameters>;
+  }) => void;
+  deleteNode: ({ ctx, id }: { ctx: WebAudio; id: string }) => void;
+  connect: ({
+    ctx,
+    sourceId,
+    targetId,
+  }: {
+    ctx: WebAudio;
+    sourceId: string;
+    targetId: string;
+  }) => void;
+  disconnect: ({
+    ctx,
+    sourceId,
+    targetId,
+  }: {
+    ctx: WebAudio;
+    sourceId: string;
+    targetId: string;
+  }) => void;
+  isRunning: (ctx: WebAudio) => boolean;
+  toggleAudio: (ctx: WebAudio) => Promise<void> | undefined;
+}
 
 export const WebAudioContext = createContext<WebAudio>({
   createNode,
@@ -225,33 +271,3 @@ export const WebAudioContext = createContext<WebAudio>({
   isRunning,
   toggleAudio,
 });
-
-export const WebAudioProvider = ({ children }: { children: ReactNode }) => {
-  const [audioContext, setAudioContext] = useState<AudioContext>();
-  const [nodes, setNodes] = useState<{ [key: string]: AudioNode }>({});
-  useEffect(() => {
-    const ctx = new AudioContext();
-    ctx.suspend();
-
-    setAudioContext(ctx);
-    setNodes({ dac: ctx.destination });
-  }, []);
-
-  return (
-    <WebAudioContext.Provider
-      value={{
-        audioContext,
-        nodes,
-        createNode,
-        updateNode,
-        deleteNode,
-        connect,
-        disconnect,
-        isRunning,
-        toggleAudio,
-      }}
-    >
-      {children}
-    </WebAudioContext.Provider>
-  );
-};

@@ -9,11 +9,7 @@ import {
   applyEdgeChanges,
 } from "reactflow";
 import { nanoid } from "nanoid";
-import {
-  GainParameters,
-  OscillatorParameters,
-  WebAudio,
-} from "./lib/WebAudioProvider";
+import { GainParameters, OscillatorParameters, WebAudio } from "./lib";
 
 export interface AppStore {
   isAudioRunning: boolean;

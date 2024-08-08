@@ -2,7 +2,7 @@ import { Position } from "reactflow";
 import { AppStore, useStore } from "../../store";
 import { ChangeEvent, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { WebAudio, WebAudioContext } from "../../lib/WebAudioProvider";
+import { WebAudio, WebAudioContext } from "../../lib";
 import { NodeCard } from "./NodeCard";
 
 export interface ClockData {

@@ -13,6 +13,10 @@ export interface GainParameters {
   gain: number;
 }
 
+export interface ClockParameters {
+  bpm: number;
+}
+
 export type WebAudioNodeParameters = OscillatorParameters | GainParameters;
 
 export interface WebAudio {
@@ -82,6 +86,8 @@ export const createNode = ({
     console.error("No Nodes");
     return;
   }
+
+  console.log(`creating ${type} node with id ${id}`);
 
   switch (type) {
     case "clock":

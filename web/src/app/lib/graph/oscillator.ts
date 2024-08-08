@@ -58,7 +58,7 @@ export function createOsc(graph: MusicGraph, ctx: AudioContext): OscNode {
       frequency: {
         id: "frequency",
         name: "Frequency",
-        value: 440,
+        value: freq,
         rate: "audio",
         routing: "input",
       },
@@ -66,7 +66,7 @@ export function createOsc(graph: MusicGraph, ctx: AudioContext): OscNode {
         id: "type",
         name: "Type",
         value: "sine",
-        rate: "audio",
+        rate: "constant",
         routing: "input",
       },
     },

@@ -97,13 +97,23 @@ export const useStore = create(
         edges: [edge, ...get().edges],
       });
 
-      ctx.connect({ ctx, sourceId: source, targetId: target });
+      const sourceId = source;
+      const sourceSlot = sourceHandle?.split("#")[1];
+      const targetId = target;
+      const targetSlot = targetHandle?.split("#")[1];
+
+      ctx.connect({ ctx, sourceId, sourceSlot, targetId, targetSlot });
     },
     removeEdges(ctx: WebAudio, edges: Edge[]) {
       for (const edge of edges) {
-        const { source, target } = edge;
+        const { source, sourceHandle, target, targetHandle } = edge;
         if (source && target) {
-          ctx.disconnect({ ctx, sourceId: source, targetId: target });
+          const sourceId = source;
+          const sourceSlot = sourceHandle?.split("#")[1];
+          const targetId = target;
+          const targetSlot = targetHandle?.split("#")[1];
+
+          ctx.disconnect({ ctx, sourceId, sourceSlot, targetId, targetSlot });
         }
       }
     },

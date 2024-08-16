@@ -111,7 +111,6 @@ export const connect = ({
     return;
   }
 
-  console.log(`attempting to connect nodes`, source, target);
   source.connect({ sourceSlot, target, targetSlot });
 };
 

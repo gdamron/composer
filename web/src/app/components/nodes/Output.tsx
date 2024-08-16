@@ -21,9 +21,9 @@ export const Output = () => {
       title="Output"
       handles={[
         {
+          id: "input#dac",
           type: "target",
           position: Position.Top,
-          id: "audioIn",
         },
       ]}
     >

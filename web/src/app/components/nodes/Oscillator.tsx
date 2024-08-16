@@ -35,12 +35,12 @@ export const Oscillator = ({
       title="Oscillator"
       handles={[
         {
-          id: "fmIn",
+          id: "input#freq",
           position: Position.Top,
           type: "target",
         },
         {
-          id: "audioOut",
+          id: "output#osc",
           position: Position.Bottom,
           type: "source",
         },

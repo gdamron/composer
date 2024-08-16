@@ -26,12 +26,12 @@ export const Gain = ({ id, data }: { id: string; data: GainData }) => {
       title="Gain"
       handles={[
         {
-          id: "audioIn",
+          id: "input#gain",
           position: Position.Top,
           type: "target",
         },
         {
-          id: "audioOut",
+          id: "output#gain",
           position: Position.Bottom,
           type: "source",
         },

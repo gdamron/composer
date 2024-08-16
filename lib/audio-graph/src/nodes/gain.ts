@@ -1,4 +1,4 @@
-import { AudioGraphNode } from "./base";
+import { AudioGraphNode, connectNodes, disconnectNodes } from "./base";
 import { AudioGraphFactoryParameters } from "./factory";
 
 export type GainGraphNodeParameters = {
@@ -38,36 +38,17 @@ export const createGain = (
     connections: {
       gain: [],
     },
-    connect({ target, targetSlot }) {
-      const tSlot = targetSlot ?? target.defaultSlot;
-      const node = target.nodes[tSlot];
-      if (node as AudioNode) {
-        this.nodes.gain.connect(node as AudioNode);
-      } else if (node as AudioParam) {
-        this.nodes.gain.connect(node as AudioParam);
-      }
-
-      this.connections.gain.push(`${target.id}#${targetSlot}`);
+    connect(params) {
+      connectNodes({
+        ...params,
+        source: this,
+      });
     },
-    disconnect({ target, targetSlot }) {
-      const tSlot = targetSlot ?? target.defaultSlot;
-      const connectionVal = `${target.id}#${tSlot}`;
-      const slotIndex = this.connections.gain.indexOf(connectionVal);
-      if (slotIndex == -1) {
-        console.warn(
-          `Connection not found for target ${target.id} on GainGraphNode ${this.id}`,
-        );
-        return;
-      }
-
-      const node = target.nodes[tSlot];
-      if (node as AudioNode) {
-        this.nodes.gain.disconnect(node as AudioNode);
-      } else if (node as AudioParam) {
-        this.nodes.gain.disconnect(node as AudioParam);
-      }
-
-      this.connections.gain.splice(slotIndex, 1);
+    disconnect(params) {
+      disconnectNodes({
+        ...params,
+        source: this,
+      });
     },
     update(params) {
       const { gain } = params as GainGraphNodeParameters;

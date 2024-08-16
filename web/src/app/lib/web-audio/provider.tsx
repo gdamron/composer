@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useMemo, useState } from "react";
 import {
   AudioGraphNode,
   WebAudio,
@@ -27,12 +27,17 @@ export const WebAudioContext = createContext<WebAudio>({
 export const WebAudioProvider = ({ children }: { children: ReactNode }) => {
   const [audioContext, setAudioContext] = useState<AudioContext>();
   const [nodes] = useState<{ [key: string]: AudioGraphNode }>({});
-  useEffect(() => {
+  useMemo(() => {
+    if (audioContext) {
+      return;
+    }
+
+    console.log("Creating audio context");
     const ctx = new AudioContext();
     ctx.suspend();
 
     setAudioContext(ctx);
-  }, []);
+  }, [audioContext]);
 
   return (
     <WebAudioContext.Provider

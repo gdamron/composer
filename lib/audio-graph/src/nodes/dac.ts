@@ -6,6 +6,7 @@ export type DacGraphNodeParameters = {};
 export interface DacGraphNode extends AudioGraphNode {
   type: "dac";
   defaultSlot: "dac";
+  audioContext: AudioContext;
   nodes: {
     dac: AudioDestinationNode;
   };
@@ -26,6 +27,7 @@ export const createDac = (
     id,
     type: "dac",
     defaultSlot: "dac",
+    audioContext: ctx.audioContext,
     nodes: { dac },
     connections: {},
     connect() {

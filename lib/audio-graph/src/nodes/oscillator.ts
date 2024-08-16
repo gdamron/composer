@@ -1,4 +1,4 @@
-import { AudioGraphNode } from "./base";
+import { AudioGraphNode, connectNodes, disconnectNodes } from "./base";
 import { AudioGraphFactoryParameters } from "./factory";
 
 export interface OscillatorGraphNodeParameters {
@@ -39,40 +39,17 @@ export const createOscillator = (
     defaultSlot: "osc",
     nodes: { osc, freq: osc.frequency },
     connections: { osc: [] },
-    connect({ target, targetSlot }) {
-      const tSlot = targetSlot ?? target.defaultSlot;
-      const targetNode = target.nodes[tSlot];
-
-      if (targetNode as AudioNode) {
-        this.nodes.osc.connect(targetNode as AudioNode);
-      } else if (targetNode as AudioParam) {
-        this.nodes.osc.connect(targetNode as AudioParam);
-      } else {
-        throw Error(`Invalid connection request to node ${target.id}`);
-      }
-
-      this.connections.osc.push(`${target.id}#${tSlot}`);
+    connect(params) {
+      connectNodes({
+        ...params,
+        source: this,
+      });
     },
-    disconnect({ target, targetSlot }) {
-      const tSlot = targetSlot ?? target.defaultSlot;
-      const connectionVal = `${target.id}#${tSlot}`;
-      const slotIndex = this.connections.osc.indexOf(connectionVal);
-
-      if (slotIndex == -1) {
-        console.warn(
-          `Connection not found for target ${target.id} on GainGraphNode ${this.id}`,
-        );
-        return;
-      }
-
-      const node = target.nodes[tSlot];
-      if (node as AudioNode) {
-        this.nodes.osc.disconnect(node as AudioNode);
-      } else if (node as AudioParam) {
-        this.nodes.osc.disconnect(node as AudioParam);
-      }
-
-      this.connections.osc.splice(slotIndex, 1);
+    disconnect(params) {
+      disconnectNodes({
+        ...params,
+        source: this,
+      });
     },
     update(params) {
       const { frequency, waveform } = params as OscillatorGraphNodeParameters;

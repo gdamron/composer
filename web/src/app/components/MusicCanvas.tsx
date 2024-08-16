@@ -13,7 +13,7 @@ import { WebAudioContext } from "../lib";
 import { AppStore, useStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
 import { Oscillator, Gain, Output } from "./";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 const selector = (store: AppStore) => ({
   ...store,
@@ -37,6 +37,17 @@ export const MusicCanvas = () => {
     removeNodes,
     removeEdges,
   } = useStore(useShallow(selector));
+
+  useMemo(() => {
+    if (!ctx.audioContext) {
+      return;
+    }
+
+    if (ctx.nodes["dac"]) {
+      return;
+    }
+    ctx.createNode({ ctx, id: "dac", type: "dac" });
+  }, [ctx]);
   return (
     <ReactFlow
       nodes={nodes}

@@ -9,7 +9,11 @@ import {
   applyEdgeChanges,
 } from "reactflow";
 import { nanoid } from "nanoid";
-import { GainParameters, OscillatorParameters, WebAudio } from "./lib";
+import {
+  AudioGraphNodeParameters,
+  AudioGraphNodeType,
+  WebAudio,
+} from "@audio-graph";
 
 export interface AppStore {
   isAudioRunning: boolean;
@@ -17,7 +21,7 @@ export interface AppStore {
   edges: Edge[];
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
-  addNode: (ctx: WebAudio, type: string) => void;
+  addNode: (ctx: WebAudio, type: AudioGraphNodeType) => void;
   addEdge: (ctx: WebAudio, data: Connection | undefined) => void;
   removeEdges: (ctx: WebAudio, edges: Edge[]) => void;
   updateNode: (ctx: WebAudio, id: string, data: any) => void;
@@ -47,32 +51,32 @@ export const useStore = create(
         edges: applyEdgeChanges(changes, get().edges),
       });
     },
-    addNode(ctx: WebAudio, type: string) {
+    addNode(ctx: WebAudio, type: AudioGraphNodeType) {
       const id = nanoid();
+      const position = { x: 0, y: 0 };
+      let data: AudioGraphNodeParameters;
 
       switch (type) {
         case "osc": {
-          const data: OscillatorParameters = {
-            frequency: 440,
-            type: "sine",
-          };
-          const position = { x: 0, y: 0 };
-
-          ctx.createNode({ ctx, id, type, data });
-          set({ nodes: [...get().nodes, { id, type, data, position }] });
-
+          data = { frequency: 440, waveform: "sine" };
           break;
         }
 
         case "gain": {
-          const data: GainParameters = { gain: 1.0 };
-          const position = { x: 0, y: 0 };
-          ctx.createNode({ ctx, id, type, data });
-          set({ nodes: [...get().nodes, { id, type, data, position }] });
-
+          data = { gain: 1.0 };
           break;
         }
+
+        case "dac":
+          data = {};
+          break;
+
+        default:
+          return;
       }
+
+      ctx.createNode({ ctx, id, type, ...data });
+      set({ nodes: [...get().nodes, { id, type, data, position }] });
     },
     addEdge(ctx: WebAudio, connection: Connection | undefined) {
       const { source, target, sourceHandle, targetHandle } = connection || {};
@@ -92,18 +96,29 @@ export const useStore = create(
       set({
         edges: [edge, ...get().edges],
       });
-      ctx.connect({ ctx, sourceId: source, targetId: target });
+
+      const sourceId = source;
+      const sourceSlot = sourceHandle?.split("#")[1];
+      const targetId = target;
+      const targetSlot = targetHandle?.split("#")[1];
+
+      ctx.connect({ ctx, sourceId, sourceSlot, targetId, targetSlot });
     },
     removeEdges(ctx: WebAudio, edges: Edge[]) {
       for (const edge of edges) {
-        const { source, target } = edge;
+        const { source, sourceHandle, target, targetHandle } = edge;
         if (source && target) {
-          ctx.disconnect({ ctx, sourceId: source, targetId: target });
+          const sourceId = source;
+          const sourceSlot = sourceHandle?.split("#")[1];
+          const targetId = target;
+          const targetSlot = targetHandle?.split("#")[1];
+
+          ctx.disconnect({ ctx, sourceId, sourceSlot, targetId, targetSlot });
         }
       }
     },
     updateNode(ctx: WebAudio, id, data) {
-      ctx.updateNode({ ctx, id, data });
+      ctx.updateNode({ ctx, id, ...data });
       set({
         nodes: get().nodes.map((node) =>
           node.id === id ? { ...node, data: { ...node.data, ...data } } : node,

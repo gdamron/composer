@@ -1,10 +1,12 @@
+import { ClockGraphNodeParameters } from "./clock";
 import { DacGraphNodeParameters } from "./dac";
 import { GainGraphNodeParameters } from "./gain";
 import { OscillatorGraphNodeParameters } from "./oscillator";
 
-export type AudioGraphNodeType = "osc" | "gain" | "dac";
+export type AudioGraphNodeType = "clock" | "osc" | "gain" | "dac";
 
 export type AudioGraphNodeParameters =
+  | ClockGraphNodeParameters
   | DacGraphNodeParameters
   | GainGraphNodeParameters
   | OscillatorGraphNodeParameters;

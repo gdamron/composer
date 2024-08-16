@@ -23,8 +23,6 @@ export const createOscillator = (
 ): OscillatorGraphNode => {
   const { id, ctx } = params;
 
-  console.log(params);
-
   if (!ctx.audioContext) {
     throw Error("AudioContext is required to create nodes.");
   }
@@ -50,14 +48,16 @@ export const createOscillator = (
       } else if (targetNode as AudioParam) {
         this.nodes.osc.connect(targetNode as AudioParam);
       } else {
-        throw Error(`Invalide connection request to node ${target.id}`);
+        throw Error(`Invalid connection request to node ${target.id}`);
       }
 
       this.connections.osc.push(`${target.id}#${tSlot}`);
     },
     disconnect({ target, targetSlot }) {
-      const connectionVal = `${target.id}#${targetSlot}`;
+      const tSlot = targetSlot ?? target.defaultSlot;
+      const connectionVal = `${target.id}#${tSlot}`;
       const slotIndex = this.connections.osc.indexOf(connectionVal);
+
       if (slotIndex == -1) {
         console.warn(
           `Connection not found for target ${target.id} on GainGraphNode ${this.id}`,
@@ -65,7 +65,6 @@ export const createOscillator = (
         return;
       }
 
-      const tSlot = targetSlot ?? target.defaultSlot;
       const node = target.nodes[tSlot];
       if (node as AudioNode) {
         this.nodes.osc.disconnect(node as AudioNode);

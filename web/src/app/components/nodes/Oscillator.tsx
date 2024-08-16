@@ -1,11 +1,12 @@
 "use client";
 
-import { Handle, Position } from "reactflow";
+import { Position } from "reactflow";
 import { AppStore, useStore } from "../../store";
 import { ChangeEvent, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { WebAudio, WebAudioContext } from "../../lib";
 import { NodeCard } from "./NodeCard";
+import { WebAudioContext } from "../../lib";
+import { WebAudio } from "@audio-graph";
 
 export interface OscillatorData {
   frequency: number;
@@ -16,7 +17,7 @@ const selector = (ctx: WebAudio, id: string) => (store: AppStore) => ({
   setFrequency: (e: ChangeEvent<HTMLInputElement>) =>
     store.updateNode(ctx, id, { frequency: +e.target.value }),
   setType: (e: ChangeEvent<HTMLSelectElement>) =>
-    store.updateNode(ctx, id, { type: e.target.value }),
+    store.updateNode(ctx, id, { waveform: e.target.value }),
 });
 
 export const Oscillator = ({

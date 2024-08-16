@@ -50,7 +50,8 @@ export const createGain = (
       this.connections.gain.push(`${target.id}#${targetSlot}`);
     },
     disconnect({ target, targetSlot }) {
-      const connectionVal = `${target.id}#${targetSlot}`;
+      const tSlot = targetSlot ?? target.defaultSlot;
+      const connectionVal = `${target.id}#${tSlot}`;
       const slotIndex = this.connections.gain.indexOf(connectionVal);
       if (slotIndex == -1) {
         console.warn(
@@ -59,7 +60,6 @@ export const createGain = (
         return;
       }
 
-      const tSlot = targetSlot ?? target.defaultSlot;
       const node = target.nodes[tSlot];
       if (node as AudioNode) {
         this.nodes.gain.disconnect(node as AudioNode);

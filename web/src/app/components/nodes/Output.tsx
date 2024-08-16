@@ -2,7 +2,7 @@
 
 import { useShallow } from "zustand/react/shallow";
 import { AppStore, useStore } from "../../store";
-import { Handle, Position } from "reactflow";
+import { Position } from "reactflow";
 import { useContext } from "react";
 import { WebAudioContext } from "../../lib";
 import { NodeCard } from "./NodeCard";

@@ -5,7 +5,8 @@ import { AppStore, useStore } from "../../store";
 import { ChangeEvent, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { NodeCard } from "./NodeCard";
-import { WebAudio, WebAudioContext } from "../../lib";
+import { WebAudioContext } from "../../lib";
+import { WebAudio } from "@audio-graph";
 
 export interface GainData {
   gain: number;

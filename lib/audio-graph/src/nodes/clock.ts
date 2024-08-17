@@ -68,7 +68,7 @@ export const createClock = (
     },
     destroy() {
       const osc = this.nodes.osc;
-
+      osc.onended = null;
       osc.stop();
       osc.disconnect();
     },
@@ -93,7 +93,7 @@ export const createClock = (
       oldOsc.stop();
 
       const newOsc = this.audioContext.createOscillator();
-      newOsc.frequency.value = this.nodes.osc.frequency.value;
+      newOsc.frequency.value = oldOsc.frequency.value;
       newOsc.type = "sawtooth";
 
       this.nodes.osc = newOsc;

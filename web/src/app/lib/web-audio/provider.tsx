@@ -4,6 +4,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import {
   AudioGraphNode,
   WebAudio,
+  createControlEventCoordinator,
   createNode,
   updateNode,
   deleteNode,
@@ -11,6 +12,7 @@ import {
   connect,
   disconnect,
   isRunning,
+  ControlEventCoordinator,
 } from "@audio-graph";
 
 export const WebAudioContext = createContext<WebAudio>({
@@ -26,6 +28,8 @@ export const WebAudioContext = createContext<WebAudio>({
 
 export const WebAudioProvider = ({ children }: { children: ReactNode }) => {
   const [audioContext, setAudioContext] = useState<AudioContext>();
+  const [eventCoordinator, setEventCoordinator] =
+    useState<ControlEventCoordinator>();
   const [nodes] = useState<{ [key: string]: AudioGraphNode }>({});
   useEffect(() => {
     if (audioContext) {
@@ -37,12 +41,18 @@ export const WebAudioProvider = ({ children }: { children: ReactNode }) => {
     ctx.suspend();
 
     setAudioContext(ctx);
+
+    console.log("Creating event coordinator");
+    const coord = createControlEventCoordinator();
+
+    setEventCoordinator(coord);
   }, [audioContext]);
 
   return (
     <WebAudioContext.Provider
       value={{
         audioContext,
+        eventCoordinator,
         nodes,
         createNode,
         updateNode,

@@ -1,8 +1,5 @@
-import {
-  AudioGraphConnection,
-  AudioGraphNode,
-  AudioGraphNodeParameters,
-} from "./nodes/base";
+import { ControlEventCoordinator } from "./events/coordinator";
+import { AudioGraphNode, AudioGraphNodeParameters } from "./nodes/base";
 import {
   AudioGraphCreateNodeParameters,
   createAudioGraphNode,
@@ -10,6 +7,7 @@ import {
 
 export interface WebAudio {
   audioContext?: AudioContext | undefined;
+  eventCoordinator?: ControlEventCoordinator | undefined;
   nodes: { [key: string]: AudioGraphNode };
   createNode: (params: AudioGraphCreateNodeParameters) => void;
   updateNode: (

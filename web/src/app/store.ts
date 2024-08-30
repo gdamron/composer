@@ -29,6 +29,14 @@ export interface AppStore {
   toggleAudio: (ctx: WebAudio) => void;
 }
 
+const defaultParameters: Record<AudioGraphNodeType, AudioGraphNodeParameters> =
+  {
+    clock: { bpm: 60.0 },
+    dac: {},
+    gain: { gain: 1.0 },
+    osc: { frequency: 440, waveform: "sine" },
+  };
+
 export const useStore = create(
   (set, get: () => AppStore): AppStore => ({
     isAudioRunning: false,
@@ -54,26 +62,7 @@ export const useStore = create(
     addNode(ctx: WebAudio, type: AudioGraphNodeType) {
       const id = nanoid();
       const position = { x: 0, y: 0 };
-      let data: AudioGraphNodeParameters;
-
-      switch (type) {
-        case "osc": {
-          data = { frequency: 440, waveform: "sine" };
-          break;
-        }
-
-        case "gain": {
-          data = { gain: 1.0 };
-          break;
-        }
-
-        case "dac":
-          data = {};
-          break;
-
-        default:
-          return;
-      }
+      const data = defaultParameters[type];
 
       ctx.createNode({ ctx, id, type, ...data });
       set({ nodes: [...get().nodes, { id, type, data, position }] });

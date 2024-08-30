@@ -4,6 +4,7 @@ import {
   AudioGraphNodeParameters,
   AudioGraphNodeType,
 } from "./base";
+import { createClock } from "./clock";
 import { createDac } from "./dac";
 import { createGain } from "./gain";
 import { createOscillator } from "./oscillator";
@@ -17,6 +18,7 @@ const factories: Record<
   AudioGraphNodeType,
   (params: AudioGraphFactoryParameters) => AudioGraphNode
 > = {
+  clock: createClock,
   dac: createDac,
   gain: createGain,
   osc: createOscillator,

@@ -1,13 +1,23 @@
+import { ClockGraphNodeParameters } from "./clock";
 import { DacGraphNodeParameters } from "./dac";
 import { GainGraphNodeParameters } from "./gain";
 import { OscillatorGraphNodeParameters } from "./oscillator";
 
-export type AudioGraphNodeType = "osc" | "gain" | "dac";
+export type AudioGraphNodeType = "clock" | "osc" | "gain" | "dac";
+
+export type AudioGraphConnectionRate = "audio" | "control" | "constant";
 
 export type AudioGraphNodeParameters =
+  | ClockGraphNodeParameters
   | DacGraphNodeParameters
   | GainGraphNodeParameters
   | OscillatorGraphNodeParameters;
+
+export type AudioGraphSlot = {
+  key: string;
+  name: string;
+  rate: string;
+};
 
 export type AudioGraphConnection = {
   target: AudioGraphNode;
@@ -32,6 +42,12 @@ export interface AudioGraphNode {
 
   /** The default slot the nodes uses when working with connections. */
   defaultSlot: string;
+
+  /** All available input slots for the node with their update rate. */
+  inputs: { [key: string]: AudioGraphSlot };
+
+  /** All available output slots for the node with their update rate. */
+  outputs: { [key: string]: AudioGraphSlot };
 
   /** Establishes a connection with another node, if permitted by the target. */
   connect: (params: AudioGraphConnection) => void;

@@ -10,6 +10,8 @@ export interface DacGraphNode extends AudioGraphNode {
   nodes: {
     dac: AudioDestinationNode;
   };
+  inputs: {};
+  outputs: {};
 }
 
 export const createDac = (
@@ -30,6 +32,8 @@ export const createDac = (
     audioContext: ctx.audioContext,
     nodes: { dac },
     connections: {},
+    inputs: {},
+    outputs: {},
     connect() {
       console.warn("A DAC node does not support connections.");
     },

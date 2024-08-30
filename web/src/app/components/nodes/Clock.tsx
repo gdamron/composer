@@ -1,6 +1,6 @@
 import { WebAudio } from "@audio-graph";
 import { AppStore, useStore } from "../../store";
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { WebAudioContext } from "../../lib";
 import { useShallow } from "zustand/react/shallow";
 import { NodeCard } from "./NodeCard";
@@ -18,6 +18,31 @@ const selector = (ctx: WebAudio, id: string) => (store: AppStore) => ({
 export const Clock = ({ id, data }: { id: string; data: ClockData }) => {
   const ctx = useContext(WebAudioContext);
   const { setBpm } = useStore(useShallow(selector(ctx, id)));
+  const [tick, setTick] = useState(false);
+
+  useEffect(() => {
+    ctx.eventCoordinator?.subscribe({
+      eventName: "clock#tick",
+      source: { id },
+      target: {
+        id: `uinode#${id}`,
+        on(event) {
+          console.log(`UI component received event`, event);
+          setTick(true);
+        },
+      },
+    });
+  }, [id, ctx.eventCoordinator]);
+
+  useEffect(() => {
+    if (!tick) {
+      return;
+    }
+
+    setTimeout(() => {
+      setTick(false);
+    }, 100);
+  }, [tick]);
 
   return (
     <NodeCard
@@ -31,7 +56,12 @@ export const Clock = ({ id, data }: { id: string; data: ClockData }) => {
       ]}
     >
       <label className="flex flex-col px-2 pt-1 pb-4">
-        <span className="text-xs font-bold my-2">Bpm</span>
+        <span className="flex justify-between text-xs font-bold my-2">
+          Bpm
+          <div
+            className={`${tick ? "opacity-100" : "opacity-0"} rounded-full w-4 h-4 bg-accent`}
+          ></div>
+        </span>
         <div className="flex justify-end bg-inputbg py-2 pe-2 rounded-md">
           <input
             className="nodrag bg-transparent text-right grow"

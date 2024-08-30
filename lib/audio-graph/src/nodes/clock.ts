@@ -1,3 +1,4 @@
+import { ControlEventCoordinator } from "../events/coordinator";
 import { AudioGraphNode, connectNodes, disconnectNodes } from "./base";
 import { AudioGraphFactoryParameters } from "./factory";
 
@@ -9,11 +10,26 @@ export interface ClockGraphNode extends AudioGraphNode {
   type: "clock";
   defaultSlot: "trigger";
   audioContext: AudioContext;
+  eventCoordinator: ControlEventCoordinator;
   nodes: {
     osc: OscillatorNode;
   };
   connections: {
     trigger: string[];
+  };
+  inputs: {
+    bpm: {
+      key: "bpm";
+      name: "BPM";
+      rate: "constant";
+    };
+  };
+  outputs: {
+    tick: {
+      key: "tick";
+      name: "Tick";
+      rate: "control";
+    };
   };
   start: () => void;
   reset: () => void;
@@ -26,6 +42,10 @@ export const createClock = (
 
   if (!ctx.audioContext) {
     throw Error("AudioContext is required to create nodes.");
+  }
+
+  if (!ctx.eventCoordinator) {
+    throw Error("ControlEventCoordinator is required to create nodes");
   }
 
   const { bpm = 60.0 } = params as ClockGraphNodeParameters;
@@ -41,8 +61,23 @@ export const createClock = (
     type: "clock",
     defaultSlot: "trigger",
     audioContext: ctx.audioContext,
+    eventCoordinator: ctx.eventCoordinator,
     nodes: { osc },
     connections: { trigger: [] },
+    inputs: {
+      bpm: {
+        key: "bpm",
+        name: "BPM",
+        rate: "constant",
+      },
+    },
+    outputs: {
+      tick: {
+        key: "tick",
+        name: "Tick",
+        rate: "control",
+      },
+    },
     connect(params) {
       connectNodes({
         ...params,
@@ -77,11 +112,22 @@ export const createClock = (
       const ctx = this.audioContext;
 
       osc.start();
-      osc.stop(ctx.currentTime + 1.0 / osc.frequency.value);
+
+      const freq = osc.frequency.value;
+
+      // ensure a finite value stop time
+      const stopTime = freq > 0 ? ctx.currentTime + 1.0 / freq : undefined;
+      osc.stop(stopTime);
+
       osc.onended = () => {
-        console.log(
-          `clock ${node.id} triggered at ${node.audioContext.currentTime}`,
-        );
+        this.eventCoordinator.emit({
+          name: "clock#tick",
+          source: this,
+          data: {
+            bpm: this.nodes.osc.frequency.value * 60.0,
+            time: Date.now(),
+          },
+        });
 
         this.reset();
         this.start();

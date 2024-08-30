@@ -14,6 +14,20 @@ export interface GainGraphNode extends AudioGraphNode {
   connections: {
     gain: string[];
   };
+  inputs: {
+    gain: {
+      key: "gain";
+      name: "Gain";
+      rate: "audio";
+    };
+  };
+  outputs: {
+    gain: {
+      key: "gain";
+      name: "Gain";
+      rate: "audio";
+    };
+  };
 }
 
 export const createGain = (
@@ -37,6 +51,20 @@ export const createGain = (
     nodes: { gain },
     connections: {
       gain: [],
+    },
+    inputs: {
+      gain: {
+        key: "gain",
+        name: "Gain",
+        rate: "audio",
+      },
+    },
+    outputs: {
+      gain: {
+        key: "gain",
+        name: "Gain",
+        rate: "audio",
+      },
     },
     connect(params) {
       connectNodes({

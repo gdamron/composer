@@ -16,6 +16,25 @@ export interface OscillatorGraphNode extends AudioGraphNode {
   connections: {
     osc: string[];
   };
+  inputs: {
+    frequency: {
+      key: "frequency";
+      name: "Frequency";
+      rate: "audio";
+    };
+    waveform: {
+      key: "frequency";
+      name: "Frequency";
+      rate: "constant";
+    };
+  };
+  outputs: {
+    audio: {
+      key: "audio";
+      name: "Audio";
+      rate: "audio";
+    };
+  };
 }
 
 export const createOscillator = (
@@ -27,10 +46,13 @@ export const createOscillator = (
     throw Error("AudioContext is required to create nodes.");
   }
 
+  const defaultFreq = 440.0;
+  const defaultWaveform = "sine";
+
   const osc = ctx.audioContext.createOscillator();
   const { frequency, waveform } = params as OscillatorGraphNodeParameters;
-  osc.frequency.value = frequency ?? 440.0;
-  osc.type = waveform ?? "sine";
+  osc.frequency.value = frequency ?? defaultFreq;
+  osc.type = waveform ?? defaultWaveform;
   osc.start();
 
   const node: OscillatorGraphNode = {
@@ -39,6 +61,25 @@ export const createOscillator = (
     defaultSlot: "osc",
     nodes: { osc, freq: osc.frequency },
     connections: { osc: [] },
+    inputs: {
+      frequency: {
+        key: "frequency",
+        name: "Frequency",
+        rate: "audio",
+      },
+      waveform: {
+        key: "frequency",
+        name: "Frequency",
+        rate: "constant",
+      },
+    },
+    outputs: {
+      audio: {
+        key: "audio",
+        name: "Audio",
+        rate: "audio",
+      },
+    },
     connect(params) {
       connectNodes({
         ...params,

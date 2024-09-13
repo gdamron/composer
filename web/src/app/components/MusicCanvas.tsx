@@ -14,6 +14,7 @@ import { useShallow } from "zustand/react/shallow";
 import { Oscillator, Gain, Output, Clock } from "./";
 import { MouseEvent, useCallback, useContext, useMemo, useState } from "react";
 import { AudioGraphNodeType } from "@audio-graph";
+import { Melody } from "./nodes/Melody";
 
 interface ContextMenuPosition {
   id: string;
@@ -30,6 +31,7 @@ const nodeTypes = {
   gain: Gain,
   osc: Oscillator,
   dac: Output,
+  melody: Melody,
 };
 
 export const MusicCanvas = () => {
@@ -105,7 +107,7 @@ export const MusicCanvas = () => {
           style={{ position: "absolute", top: menu.top, left: menu.left }}
           className="bg-background border p-2 shadow-md z-50"
         >
-          {["Osc", "Gain", "Clock"].map((btn) => (
+          {["Osc", "Gain", "Clock", "Melody"].map((btn) => (
             <button
               key={btn}
               className="px-2 py-1 block"

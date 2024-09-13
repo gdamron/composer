@@ -1,5 +1,9 @@
 import { ControlEventCoordinator } from "./events/coordinator";
-import { AudioGraphNode, AudioGraphNodeParameters } from "./nodes/base";
+import {
+  AudioGraphNode,
+  AudioGraphNodeParameters,
+  isAudioGraphNodeType,
+} from "./nodes/base";
 import {
   AudioGraphCreateNodeParameters,
   createAudioGraphNode,
@@ -48,7 +52,12 @@ export interface WebAudio {
 }
 
 export const createNode = (params: AudioGraphCreateNodeParameters) => {
-  const { ctx, id } = params;
+  const { ctx, id, type } = params;
+
+  if (!isAudioGraphNodeType(type)) {
+    console.warn(`${type} is not a known audio graph node type.`);
+    return;
+  }
 
   const context = ctx.audioContext;
   if (!context) {

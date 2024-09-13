@@ -3,7 +3,13 @@ import { DacGraphNodeParameters } from "./dac";
 import { GainGraphNodeParameters } from "./gain";
 import { OscillatorGraphNodeParameters } from "./oscillator";
 
-export type AudioGraphNodeType = "clock" | "osc" | "gain" | "dac";
+const AudioGraphNodeTypes = ["clock", "osc", "gain", "dac"] as const;
+export type AudioGraphNodeType = (typeof AudioGraphNodeTypes)[number];
+export const isAudioGraphNodeType = (
+  input: unknown,
+): input is AudioGraphNodeType => {
+  return AudioGraphNodeTypes.indexOf(input as AudioGraphNodeType) != -1;
+};
 
 export type AudioGraphConnectionRate = "audio" | "control" | "constant";
 
